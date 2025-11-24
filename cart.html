@@ -1,0 +1,153 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Your Cart</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <style>
+            .cart-item {
+                border-radius: 10px;
+                padding: 15px;
+                background: #fff;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transition: 0.3s;
+            }
+            .cart-item:hover {
+                transform: translateY(-3px);
+            }
+            .cart-img {
+                width: 90px;
+                height: 90px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+            .qty-btn {
+                width: 30px;
+                height: 30px;
+                border: none;
+                background: #0d6efd;
+                color: white;
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+
+    <body class="cart-bg">
+    <div class="container py-4">
+        <a href="index.html" class="btn btn-dark mb-4">← Back to Products</a>
+        <h2>Your Cart</h2>
+        <p class="text-muted">Items you added</p>
+        <div id="cartContainer" class="mt-4"></div>
+        <div id="cartTotalBox" class="mt-4 p-3 bg-white rounded shadow-sm d-none">
+            <h4>Total: $<span id="totalPrice">0</span></h4>
+            <button class="btn btn-success w-100 mt-3">Proceed to Checkout</button>
+        </div>
+
+    </div>
+
+    <script>
+    const products = [
+        {id:1, title:"Laptop", category:"electronics", price:800, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ_-fKefeJAv6Dteapoeu_qliA5-nr_b4T9A&s"},
+        {id:2, title:"T-Shirt", category:"clothing", price:20, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDGNEN-GHOrEDVlwildiLC1_forOoowaY3Q&s"},
+        {id:3, title:"Book", category:"books", price:15, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDbZJli5HpDTCTotS9SwmcwE5jd_tecNS98g&s"},
+        {id:4, title:"Headphones", category:"electronics", price:50, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCpitxpyDkXZn54mHvrG-VT8rh_4uxjuGUxg&s"},
+        {id:5, title:"Jeans", category:"clothing", price:40, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdWNOgaRmufklUBQOjg44XxSYNSbrfnhDJzA&s"},
+        {id:6, title:"Necklace", category:"jewellery", price:120, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQclBMYTwQg10v9DQd9BaP6vw156F-Jjug9bw&s"},
+        {id:7, title:"Blender", category:"home-kitchen", price:60, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBW8OhEKD_ejj1yTsFVHwt3pRE2TOHsJ2Pg&s"}
+    ];
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartCount = {};
+    cart.forEach(id => {
+        cartCount[id] = (cartCount[id] || 0) + 1;
+    });
+
+    const container = document.getElementById("cartContainer");
+    const totalBox = document.getElementById("cartTotalBox");
+    const totalPriceElement = document.getElementById("totalPrice");
+
+    function displayCart() {
+        container.innerHTML = "";
+
+        if (cart.length === 0) {
+            container.innerHTML = `<h4 class="text-center text-muted mt-4">Your cart is empty</h4>`;
+            totalBox.classList.add("d-none");
+            return;
+        }
+
+        let total = 0;
+
+        Object.keys(cartCount).forEach(id => {
+            const product = products.find(p => p.id == id);
+            const qty = cartCount[id];
+            const itemTotal = product.price * qty;
+            total += itemTotal;
+
+            const item = document.createElement("div");
+            item.classList.add("cart-item", "mb-3");
+
+            item.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <img src="${product.img}" class="cart-img">
+                    </div>
+
+                    <div class="col-md-4">
+                        <h5>${product.title}</h5>
+                        <p class="text-muted">$${product.price} each</p>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="qty-btn" onclick="changeQty(${id}, -1)">-</button>
+                            <span class="fw-bold">${qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${id}, 1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <h5>$${itemTotal}</h5>
+                    </div>
+
+                    <div class="col-md-1">
+                        <button class="btn btn-sm btn-danger" onclick="removeItem(${id})">X</button>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(item);
+        });
+
+        totalPriceElement.textContent = total;
+        totalBox.classList.remove("d-none");
+    }
+    function changeQty(id, amount) {
+        if (amount === 1) {
+            cart.push(id);
+        } else {
+            const index = cart.indexOf(id);
+            if (index > -1) cart.splice(index, 1);
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCounts();
+        displayCart();
+    }
+    function removeItem(id) {
+        cart = cart.filter(item => item !== id);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCounts();
+        displayCart();
+    }
+    function updateCounts() {
+        cartCount = {};
+        cart.forEach(id => {
+            cartCount[id] = (cartCount[id] || 0) + 1;
+        });
+    }
+    displayCart();
+    </script>
+
+    </body>
+    </html>

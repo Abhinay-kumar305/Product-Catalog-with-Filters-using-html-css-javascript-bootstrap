@@ -1,0 +1,44 @@
+/* Card Hover Animation */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Wishlist heart button */
+.wishlist-btn {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #dc3545;
+}
+
+.wishlist-btn:hover {
+    transform: scale(1.2);
+}
+.anime-bg {
+    min-height: 100vh;
+    margin: 0;
+
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #5e4bff, #8a2be2, #4aa8ff);
+    background-size: 300% 300%;
+    animation: gradientMove 12s ease infinite;
+    backdrop-filter: blur(3px);
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
+

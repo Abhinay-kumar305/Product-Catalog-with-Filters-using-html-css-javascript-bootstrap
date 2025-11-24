@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="background: linear-gradient(135deg, #ff9a9e, #fad0c4); min-height: 100vh;">>
+<div class="container py-5">
+    <a href="index.html" class="btn btn-dark mb-4">← Back</a>
+    <h2 class="mb-4">My Wishlist</h2>
+    <div class="row" id="wishlistGrid"></div>
+</div>
+<script>
+const products = [
+    {id:1, title:"Laptop", category:"electronics", price:800, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ_-fKefeJAv6Dteapoeu_qliA5-nr_b4T9A&s"},
+    {id:2, title:"T-Shirt", category:"clothing", price:20, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxDGNEN-GHOrEDVlwildiLC1_forOoowaY3Q&s"},
+    {id:3, title:"Book", category:"books", price:15, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDbZJli5HpDTCTotS9SwmcwE5jd_tecNS98g&s"},
+    {id:4, title:"Headphones", category:"electronics", price:50, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCpitxpyDkXZn54mHvrG-VT8rh_4uxjuGUxg&s"},
+    {id:5, title:"Jeans", category:"clothing", price:40, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdWNOgaRmufklUBQOjg44XxSYNSbrfnhDJzA&s"},
+    {id:6, title:"Necklace", category:"jewellery", price:120, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQclBMYTwQg10v9DQd9BaP6vw156F-Jjug9bw&s"},
+    {id:7, title:"Blender", category:"home-kitchen", price:60, img:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBW8OhEKD_ejj1yTsFVHwt3pRE2TOHsJ2Pg&s"}
+];
+let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+const wishlistGrid = document.getElementById("wishlistGrid");
+function renderWishlist() {
+    wishlistGrid.innerHTML = "";
+    if (wishlist.length === 0) {
+        wishlistGrid.innerHTML = "<p>No items in wishlist.</p>";
+        return;
+    }
+    wishlist.forEach(id => {
+        const p = products.find(x => x.id === id);
+        if (!p) return;
+        wishlistGrid.innerHTML += `
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="${p.img}" class="card-img-top" style="height:250px; object-fit:cover;">
+                    <div class="card-body">
+                        <h5>${p.title}</h5>
+                        <p>$${p.price}</p>
+                        <a href="product-details.html?id=${p.id}" class="btn btn-dark w-100">View</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+renderWishlist();
+</script>
+</body>
+</html>
